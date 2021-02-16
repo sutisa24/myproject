@@ -75,7 +75,7 @@ class _RegisterState extends State<Register> {
         print('Resgister Success uid ==> $uid');
 
         UserModel model =
-            UserModel(name: name, surname: surname, phone: phone, email: email);
+            UserModel(name: name, surname: surname, phone: phone, email: email, avatar: '');
         Map<String, dynamic> data = model.toJson();
 
         await FirebaseFirestore.instance

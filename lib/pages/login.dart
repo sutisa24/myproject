@@ -47,7 +47,7 @@ class _LoginState extends State<Login> {
               buildAppName(),
               buildUser(),
               buildPassword(),
-              //buildForgotpassword(),
+              buildForgotpassword(),
               buildButtonLogin(),
               buildResgister(),
             ],
@@ -89,8 +89,51 @@ class _LoginState extends State<Login> {
     });
   }
 
-  //TextButton buildForgotpassword() =>
-      //TextButton(onPressed: () {}, child: Text('ลืมรหัสผ่าน'));
+  TextButton buildForgotpassword() => TextButton(
+        onPressed: () async {
+          email = null;
+          showDialog(
+            context: context,
+            builder: (context) => SimpleDialog(
+              title: ListTile(
+                leading: Image(
+                  image: AssetImage('images/logoip.png'),
+                ),
+                title: Text('Forget Password ?'),
+                subtitle: Text('กรุณากรอก Email ที่เคยสมัคร'),
+              ),
+              children: [
+                Container(
+                  margin: EdgeInsets.only(left: 50, right: 50),
+                  child: TextField(
+                    onChanged: (value) => email = value.trim(),
+                    decoration: InputDecoration(border: OutlineInputBorder()),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    if (email?.isEmpty ?? true) {
+                      normalDialog(context, 'Email ห้ามว่างค่ะ');
+                    } else {
+                      await Firebase.initializeApp().then((value) async {
+                        await FirebaseAuth.instance
+                            .sendPasswordResetEmail(email: email)
+                            .then((value) => normalDialog(context, 'กรุณาไปตรวจ Email เราส่ง Reset ไปแล้ว'))
+                            .catchError((onError) {
+                              normalDialog(context, onError.message);
+                            });
+                      });
+                    }
+                  },
+                  child: Text('Send'),
+                )
+              ],
+            ),
+          );
+        },
+        child: Text('ลืมรหัสผ่าน'),
+      );
 
   TextButton buildResgister() => TextButton(
         onPressed: () => Navigator.push(

@@ -60,7 +60,7 @@ class _InformationState extends State<Information> {
     );
   }
 
-  RaisedButton buildEditButton() => RaisedButton.icon(
+  RaisedButton buildEditButton() => RaisedButton.icon(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         color: Colors.blue,
         onPressed: () => Navigator.push(
           context,
@@ -87,7 +87,7 @@ class _InformationState extends State<Information> {
       height: 250,
       child: userModel.avatar == null
           ? Image.asset('images/avatar.png')
-          : Image.network(userModel.avatar),
+          : CircleAvatar(backgroundImage: NetworkImage(userModel.avatar),),
     );
   }
 }

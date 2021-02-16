@@ -214,7 +214,7 @@ class _EditInforState extends State<EditInfor> {
       child: file == null
           ? userModel.avatar == null
               ? Image.asset('images/avatar.png')
-              : Image.network(userModel.avatar)
+              : CircleAvatar(backgroundImage: NetworkImage(userModel.avatar),)
           : Image.file(file),
     );
   }

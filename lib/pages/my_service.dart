@@ -5,6 +5,7 @@ import 'package:sermsuk/pages/gps_runner.dart';
 import 'package:sermsuk/pages/information.dart';
 import 'package:sermsuk/pages/login.dart';
 import 'package:sermsuk/pages/news_page.dart';
+import 'package:sermsuk/pages/show_list_runner.dart';
 import 'package:sermsuk/pages/type_runner.dart';
 
 class MyService extends StatefulWidget {
@@ -44,6 +45,14 @@ class _MyServiceState extends State<MyService> {
       appBar: AppBar(
         title: Text('SERMSUK'),
         actions: [
+          IconButton(
+            icon: Icon(Icons.leaderboard),
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ShowListRunner(),
+                )),
+          ),
           IconButton(
               icon: Icon(Icons.exit_to_app),
               onPressed: () async {

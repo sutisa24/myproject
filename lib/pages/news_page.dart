@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class NewsPage extends StatefulWidget {
@@ -6,14 +8,8 @@ class NewsPage extends StatefulWidget {
 }
 
 class _NewsPageState extends State<NewsPage> {
-  List<String> images = [
-    
-    'images/Newsrun2.png',
-    'images/HowRun.png',
-    'images/warm1.png',
-    'images/w2.png'
-    
-  ];
+
+  List<String> urlImages = List();
 
   List<Widget> widgets = List();
 
@@ -21,13 +17,33 @@ class _NewsPageState extends State<NewsPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    createArrayWidget();
+    readDataFromFirebase();
+   
+  }
+
+  Future<Null> readDataFromFirebase() async {
+    await Firebase.initializeApp().then((value) async {
+      await FirebaseFirestore.instance
+          .collection('News')
+          .orderBy('key')
+          .snapshots()
+          .listen((event) {
+            for (var item in event.docs) {
+              String url = item.data()['Url'];
+              
+                urlImages.add(url);
+            }
+             createArrayWidget();
+          });
+    });
   }
 
   void createArrayWidget() {
-    for (var path in images) {
-      Widget widget = Image.asset(path);
-      widgets.add(widget);
+    for (var path in urlImages) {
+      Widget widget = Image(image: NetworkImage(path));
+      setState(() {
+        widgets.add(widget);
+      });
     }
   }
 
