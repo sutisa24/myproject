@@ -33,6 +33,7 @@ class _TypeRunnerState extends State<TypeRunner> {
                 ),
               )),
           child: Image.asset(images[index]),
+        
         ),
       ),
     );

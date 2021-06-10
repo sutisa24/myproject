@@ -12,6 +12,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   String email, password;
+  bool redEye = true;
 
   @override
   void initState() {
@@ -38,38 +39,55 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              buildLogo(),
-              buildAppName(),
-              buildUser(),
-              buildPassword(),
-              buildForgotpassword(),
-              buildButtonLogin(),
-              buildResgister(),
-            ],
+      body: Container(
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage('images/wall.jpg'),
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                buildLogo(),
+                buildAppName(),
+                buildUser(),
+                buildPassword(), 
+                buildButtonLogin(),
+                buildResgister(),
+                buildForgotpassword(),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  OutlinedButton buildButtonLogin() {
-    return OutlinedButton(
-      onPressed: () {
-        if (email == null ||
-            email.isEmpty ||
-            password == null ||
-            password.isEmpty) {
-          normalDialog(context, 'กรุณากรอกทุกช่อง ค่ะ!!');
-        } else {
-          checkLogin();
-        }
-      },
-      child: Text('เข้าสู่ระบบ'),
+  Container buildButtonLogin() {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 16),
+      width: 300,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+        ),
+        onPressed: () {
+          if (email == null ||
+              email.isEmpty ||
+              password == null ||
+              password.isEmpty) {
+            normalDialog(context, 'Please fill out all fields.');
+          } else {
+            checkLogin();
+          }
+        },
+        child: Text('LOG IN'),
+      ),
     );
   }
 
@@ -90,68 +108,84 @@ class _LoginState extends State<Login> {
   }
 
   TextButton buildForgotpassword() => TextButton(
-        onPressed: () async {
-          email = null;
-          showDialog(
-            context: context,
-            builder: (context) => SimpleDialog(
-              title: ListTile(
-                leading: Image(
-                  image: AssetImage('images/logoip.png'),
-                ),
-                title: Text('Forget Password ?'),
-                subtitle: Text('กรุณากรอก Email ที่เคยสมัคร'),
-              ),
-              children: [
-                Container(
-                  margin: EdgeInsets.only(left: 50, right: 50),
-                  child: TextField(
-                    onChanged: (value) => email = value.trim(),
-                    decoration: InputDecoration(border: OutlineInputBorder()),
+        
+          onPressed: () async {
+            email = null;
+            showDialog(
+              context: context,
+
+              builder: (context) => SimpleDialog(
+                title: ListTile(
+                  leading: Image(
+                    image: AssetImage('images/logologin.png'),
                   ),
+                  title: Text('Forgot Password ?'),
+                  subtitle: Text('Enter the email that you use to sign up your account.'),
                 ),
-                TextButton(
-                  onPressed: () async {
-                    Navigator.pop(context);
-                    if (email?.isEmpty ?? true) {
-                      normalDialog(context, 'Email ห้ามว่างค่ะ');
-                    } else {
-                      await Firebase.initializeApp().then((value) async {
-                        await FirebaseAuth.instance
-                            .sendPasswordResetEmail(email: email)
-                            .then((value) => normalDialog(context, 'กรุณาไปตรวจ Email เราส่ง Reset ไปแล้ว'))
-                            .catchError((onError) {
-                              normalDialog(context, onError.message);
-                            });
-                      });
-                    }
-                  },
-                  child: Text('Send'),
-                )
-              ],
-            ),
-          );
-        },
-        child: Text('ลืมรหัสผ่าน'),
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(left: 30, right: 30),
+                    child: TextField(
+                      onChanged: (value) => email = value.trim(),
+                      decoration: InputDecoration(border: OutlineInputBorder()),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      if (email?.isEmpty ?? true) {
+                        normalDialog(context, 'Enter your email.');
+                      } else {
+                        await Firebase.initializeApp().then((value) async {
+                          await FirebaseAuth.instance
+                              .sendPasswordResetEmail(email: email)
+                              .then((value) => normalDialog(context,
+                                  'Check your email.We have sent thee password reset to your email.'))
+                              .catchError((onError) {
+                            normalDialog(context, onError.message);
+                          });
+                        });
+                      }
+                    },
+                    child: Text('Send'),
+                  )
+                ],
+              ),
+            );
+          },
+          child: Text(
+            'Forgot Password?',
+            style: TextStyle(color: Colors.grey),
+          
+        ),
       );
 
-  TextButton buildResgister() => TextButton(
-        onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Register(),
-            )),
-        child: Text('สมัครสมาชิก'),
-      );
+  Widget buildResgister() => Container(
+    width: 300,
+      child: OutlineButton(borderSide: BorderSide(width: 1,color: Colors.blue),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Register(),
+              )),
+          child: Text('Sign Up'),
+        ),
+  );
 
   Container buildUser() {
     return Container(
+      decoration: BoxDecoration(
+        color: Colors.white70,
+        borderRadius: BorderRadius.circular(30),
+      ),
       margin: EdgeInsets.only(top: 16),
-      width: 250,
+      width: 300,
       child: TextField(
         onChanged: (value) => email = value.trim(),
         decoration: InputDecoration(
-          hintText: 'ชื่อผู้ใช้งาน',
+          hintText: 'Email',
           prefixIcon: Icon(Icons.account_circle),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
@@ -167,13 +201,24 @@ class _LoginState extends State<Login> {
 
   Container buildPassword() {
     return Container(
+      decoration: BoxDecoration(
+        color: Colors.white70,
+        borderRadius: BorderRadius.circular(30),
+      ),
       margin: EdgeInsets.only(top: 16),
-      width: 250,
+      width: 300,
       child: TextField(
         onChanged: (value) => password = value.trim(),
-        obscureText: true,
+        obscureText: redEye,
         decoration: InputDecoration(
-          hintText: 'รหัสผ่าน',
+          suffixIcon: IconButton(
+              icon: Icon(Icons.remove_red_eye),
+              onPressed: () {
+                setState(() {
+                  redEye = !redEye;
+                });
+              }),
+          hintText: 'Password',
           prefixIcon: Icon(Icons.lock),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
@@ -187,18 +232,21 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Text buildAppName() => Text(
-        'ลงชื่อเข้าใช้งาน',
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
+  Container buildAppName() => Container(
+        margin: EdgeInsets.only(top: 16, bottom: 16),
+        child: Text(
+          'LOG IN',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       );
 
   Container buildLogo() {
     return Container(
       width: 120,
-      child: Image.asset('images/logoip.png'),
+      child: Image.asset('images/logologin.png'),
     );
   }
 }

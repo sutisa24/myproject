@@ -42,26 +42,65 @@ class _InformationState extends State<Information> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: userModel == null
-          ? Text('ไม่มีข้อมูล ')
+          ? Text('No Information')
           : Center(
-              child: Column(
-                children: [
-                  buildAvatar(),
-                  buildEditButton(),
-                  Text('ชื่อ : ${userModel.name}'),
-                  Text('นามสกุล : ${userModel.surname}'),
-                  Text('เบอร์โทร : ${userModel.phone}'),
-                  Text('อีเมล : ${userModel.email}'),
-                ],
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      buildAvatar(),
+                      buildEditButton(),
+                      Card(color: Colors.grey.shade50,
+                                              child: Column(mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ListTile(
+                                title: Text('First Name '),
+                                subtitle: Text('${userModel.name}'),
+                                leading: Icon(
+                                  Icons.person,
+                                  color: Colors.blue,
+                                ),
+                              ),
+                            ListTile(
+                              title: Text('Last Name '),
+                              subtitle: Text('${userModel.surname}'),
+                              leading: Icon(
+                                Icons.group,
+                                color: Colors.blue,
+                              ),
+                            ),
+                            ListTile(
+                              title: Text('Mobile Number'),
+                              subtitle: Text('${userModel.phone}'),
+                              leading: Icon(
+                                Icons.phone,
+                                color: Colors.blue,
+                              ),
+                            ),
+                            ListTile(
+                              title: Text('Email '),
+                              subtitle: Text('${userModel.email}'),
+                              leading: Icon(
+                                Icons.email,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
     );
   }
 
-  RaisedButton buildEditButton() => RaisedButton.icon(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-        color: Colors.blue,
+  RaisedButton buildEditButton() => RaisedButton.icon(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        color: Colors.amber,
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(
@@ -75,7 +114,7 @@ class _InformationState extends State<Information> {
           color: Colors.white,
         ),
         label: Text(
-          'แก้ไข',
+          'Edit',
           style: TextStyle(color: Colors.white),
         ),
       );
@@ -87,7 +126,9 @@ class _InformationState extends State<Information> {
       height: 250,
       child: userModel.avatar == null
           ? Image.asset('images/avatar.png')
-          : CircleAvatar(backgroundImage: NetworkImage(userModel.avatar),),
+          : CircleAvatar(
+              backgroundImage: NetworkImage(userModel.avatar),
+            ),
     );
   }
 }

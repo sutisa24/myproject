@@ -17,7 +17,9 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('สมัครสมาชิก'),
+        title: Text('Create an account'),
+        backgroundColor: Colors.cyanAccent[400],
+
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -39,7 +41,8 @@ class _RegisterState extends State<Register> {
 
   Container buildButtonResgister() {
     return Container(
-      margin: EdgeInsets.only(top: 16),
+      margin: EdgeInsets.only(top: 30),
+      width: 200,
       child: OutlinedButton(
         onPressed: () {
           print(
@@ -54,12 +57,12 @@ class _RegisterState extends State<Register> {
               email.isEmpty ||
               password == null ||
               password.isEmpty) {
-            normalDialog(context, 'กรุณากรอกทุกช่องค่ะ');
+            normalDialog(context, 'Please fill your information completely.');
           } else {
             registerAndInsertUser();
           }
         },
-        child: Text('ยืนยัน'),
+        child: Text('Create account'),
       ),
     );
   }
@@ -92,11 +95,11 @@ class _RegisterState extends State<Register> {
   Container buildName() {
     return Container(
       margin: EdgeInsets.only(top: 16),
-      width: 250,
+      width: 300,
       child: TextField(
         onChanged: (value) => name = value.trim(),
         decoration: InputDecoration(
-          hintText: 'ชื่อ',
+          hintText: 'First Name',
           prefixIcon: Icon(Icons.account_circle),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
@@ -113,11 +116,11 @@ class _RegisterState extends State<Register> {
   Container buildSurName() {
     return Container(
       margin: EdgeInsets.only(top: 16),
-      width: 250,
+      width: 300,
       child: TextField(
         onChanged: (value) => surname = value.trim(),
         decoration: InputDecoration(
-          hintText: 'นามสกุล',
+          hintText: 'Last Name',
           prefixIcon: Icon(Icons.group),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
@@ -134,12 +137,12 @@ class _RegisterState extends State<Register> {
   Container buildPhone() {
     return Container(
       margin: EdgeInsets.only(top: 16),
-      width: 250,
+      width: 300,
       child: TextField(
         onChanged: (value) => phone = value.trim(),
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
-          hintText: 'เบอร์โทรศัพท์',
+          hintText: 'Mobile Number',
           prefixIcon: Icon(Icons.phone),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
@@ -156,12 +159,12 @@ class _RegisterState extends State<Register> {
   Container buildEmail() {
     return Container(
       margin: EdgeInsets.only(top: 16),
-      width: 250,
+      width: 300,
       child: TextField(
         onChanged: (value) => email = value.trim(),
         keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
-          hintText: 'อีเมล',
+          hintText: 'Email',
           prefixIcon: Icon(Icons.email),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
@@ -178,11 +181,11 @@ class _RegisterState extends State<Register> {
   Container buildPassword() {
     return Container(
       margin: EdgeInsets.only(top: 16),
-      width: 250,
+      width: 300,
       child: TextField(
         onChanged: (value) => password = value.trim(),
         decoration: InputDecoration(
-          hintText: 'รหัสผ่าน',
+          hintText: 'Password',
           prefixIcon: Icon(Icons.lock),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),

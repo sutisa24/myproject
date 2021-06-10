@@ -12,7 +12,6 @@ import 'package:intl/intl.dart';
 import 'package:sermsuk/models/runner_model.dart';
 import 'package:sermsuk/pages/my_service.dart';
 import 'package:sermsuk/pages/show_list_runner.dart';
-import 'package:sermsuk/pages/type_runner.dart';
 import 'package:sermsuk/utility/nornal_dialog.dart';
 
 class GpsRunner extends StatefulWidget {
@@ -31,7 +30,7 @@ class _GpsRunnerState extends State<GpsRunner> {
   List<LatLng> coorLatLngs = List();
   LatLng latlng1, latLng2;
   bool first = true;
-  String typeRunner = '3K';
+  String typeRunner = 'ทั่วไป';
   bool status = true;
 
   @override
@@ -84,6 +83,8 @@ class _GpsRunnerState extends State<GpsRunner> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        //title: Text('เข้าสู่การแข่งขัน $typeRunner'),
+        backgroundColor: Colors.cyanAccent[400],
         leading: status
             ? SizedBox()
             : IconButton(
@@ -114,19 +115,36 @@ class _GpsRunnerState extends State<GpsRunner> {
   }
 
   OutlinedButton buildSave() => OutlinedButton.icon(
+
         onPressed: () {
           if (runTime == 0) {
-            normalDialog(context, 'กรุณา วิ่งก่อน ค่อยบันทึกค่ะ');
+            normalDialog(context, 'Please run first,then press save');
           } else if (!runStatus) {
-            normalDialog(context, 'กรุณา หยุดวิ่งก่อน ค่อยบันทึก ค่ะ');
+            normalDialog(context, 'Please stop running after that press save');
           } else {
             print('Process Save');
             processSave();
           }
         },
-        icon: Icon(Icons.save),
-        label: Text('บันทึกการวิ่ง'),
+        
+        icon: Icon(Icons.beenhere, size: 30,color: Colors.blue[900],),
+        label: Text('Save',style: TextStyle(color: Colors.grey),),
+        style: OutlinedButton.styleFrom(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            elevation: 5,
+            backgroundColor: Colors.white,
+          ),
+    
       );
+
+//เช็คความเร็ววินาที
+      String printDuration(int sec){
+        Duration duration = Duration(seconds : sec);
+        String twoDigits(int n) => n.toString().padLeft(2, "0");
+        String twoDigitMinites = twoDigits(duration.inMinutes.remainder(60));
+        String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+        return "${twoDigits(duration.inHours)}:$twoDigitMinites:$twoDigitSeconds";  
+      }
 
   Future<Null> processSave() async {
     DateTime dateTime = DateTime.now();
@@ -135,36 +153,19 @@ class _GpsRunnerState extends State<GpsRunner> {
 
     String distanceStr = NumberFormat('##0.0#', 'en_US').format(distance);
 
-    List<String> typeRunners = ['3K', '5K', '10K', 'ไม่ระบุ'];
-    String typeRunner;
+    // List<String> typeRunners = ['3K', '5K', '10K', 'ไม่ระบุ'];
+    // String typeRunner;
 
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => SimpleDialog(
           contentPadding: EdgeInsets.all(16),
-          title: Text('ยืนยันการบันทึก'),
+          title: Text('Confirm'),
           children: [
-            // DropdownButton<String>(
-            //   hint: Text('กรุณาเลือกประเภทการแข่งขัน'),
-            //   value: typeRunner,
-            //   items: typeRunners
-            //       .map(
-            //         (e) => DropdownMenuItem(
-            //           child: Text(e),
-            //           value: e,
-            //         ),
-            //       )
-            //       .toList(),
-            //   onChanged: (value) {
-            //     setState(() {
-            //       typeRunner = value;
-            //     });
-            //   },
-            // ),
-            Text('วันที่บันทึก: $dateTimeStr'),
-            Text('ระยะทางที่บันทึก: $distance Km'),
-            Text('เวลาที่บันทึก: $runTime วินาที'),
+            Text('Date and Time: $dateTimeStr'),
+            Text('Distance : $distance Km.'),
+            Text('Time : ${printDuration(runTime)}.'),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -173,13 +174,14 @@ class _GpsRunnerState extends State<GpsRunner> {
                     Navigator.pop(context);
                     saveRunnerToServer(dateTimeStr, distanceStr, runTime);
                   },
-                  child: Text('ตกลง'),
+                  child: Text('OK',style: TextStyle(color: Colors.blueAccent),),
+                  
                 ),
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text('ยกเลิก'),
+                  child: Text('Cancel'),
                 ),
               ],
             ),
@@ -196,43 +198,50 @@ class _GpsRunnerState extends State<GpsRunner> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Text(
-        'ระยะทาง = $string กิโลเมตร',
+        'Distance  $string km.',
         style: TextStyle(
-          color: Colors.red[700],
+          color: Colors.grey[600],
           fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
       ),
     );
   }
-
+  
+  
   Padding buildShowTime() => Padding(
         padding: const EdgeInsets.all(16.0),
+
         child: Text(
-          'เวลา = $runTime วินาที',
+          '${printDuration(runTime)} ',
           style: TextStyle(
-            color: Colors.green[700],
-            fontSize: 20,
+            color: Colors.cyan,
+            fontSize: 50,
             fontWeight: FontWeight.bold,
           ),
         ),
       );
 
-  OutlinedButton buildRunButton() {
-    return OutlinedButton.icon(
+  TextButton buildRunButton() {
+    return TextButton.icon(
       onPressed: () {
         setState(() {
           runStatus = !runStatus;
           processRun();
         });
       },
+      
       icon: Icon(
-        runStatus ? Icons.run_circle : Icons.stop,
-        color: runStatus ? Colors.green : Colors.red,
+        runStatus ? Icons.run_circle : Icons.do_disturb_on_rounded,size: 70,
+        color: runStatus ? Colors.cyan : Colors.red,
       ),
-      label: Text(runStatus ? 'เริ่มวิ่ง' : 'หยุดวิ่ง'),
+      label: Text(runStatus ? 'Start' : 'Stop',style: TextStyle(color: Colors.grey),),
+      
+
+
     );
   }
+ 
 
   void processRun() {
     print('runStatus ==>> $runStatus');
@@ -318,7 +327,7 @@ class _GpsRunnerState extends State<GpsRunner> {
       Marker(
           markerId: MarkerId('YourHere'),
           position: LatLng(lat, lng),
-          infoWindow: InfoWindow(title: 'คุณอยู่ที่นี่')),
+          infoWindow: InfoWindow(title: 'You here')),
     ].toSet();
   }
 
@@ -326,7 +335,7 @@ class _GpsRunnerState extends State<GpsRunner> {
     return Container(
       padding: EdgeInsets.all(16),
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.width * 0.7,
+      height: MediaQuery.of(context).size.height * 0.5,
       child: lat == null
           ? Center(child: CircularProgressIndicator())
           : GoogleMap(
@@ -342,6 +351,8 @@ class _GpsRunnerState extends State<GpsRunner> {
     );
   }
 
+  Future<Null> saveDashboard() async {}
+
   Future<Null> saveRunnerToServer(
       String dateTimeStr, String distanceStr, int runTime) async {
     await Firebase.initializeApp().then((value) async {
@@ -356,6 +367,22 @@ class _GpsRunnerState extends State<GpsRunner> {
             typerunner: typeRunner);
 
         Map<String, dynamic> data = model.toJson();
+
+        List<String> strings = dateTimeStr.split(' ');
+        List<String> string2s = strings[0].split('/');
+        String string = '${string2s[0]}-${string2s[1]}-${string2s[2]}';
+
+        await FirebaseFirestore.instance
+            .collection(typeRunner)
+            .doc(string)
+            .set({'type': typeRunner});
+
+        await FirebaseFirestore.instance
+            .collection(typeRunner)
+            .doc(string)
+            .collection('runner')
+            .doc(uid)
+            .set(data);
 
         await FirebaseFirestore.instance
             .collection('User')

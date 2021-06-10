@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:sermsuk/models/runner_model.dart';
+import 'package:sermsuk/pages/type_runner.dart';
 
 class ShowListRunner extends StatefulWidget {
   @override
@@ -30,6 +31,10 @@ class _ShowListRunnerState extends State<ShowListRunner> {
             .collection('User')
             .doc(uid)
             .collection('runner')
+            .where(
+              'typerunner',
+              isEqualTo: 'ทั่วไป',
+            )
             .snapshots()
             .listen((event) {
           print('event == ${event.toString()}');
@@ -51,20 +56,32 @@ class _ShowListRunnerState extends State<ShowListRunner> {
     });
   }
 
+  String printDuration(int sec){
+        Duration duration = Duration(seconds : sec);
+        String twoDigits(int n) => n.toString().padLeft(2, "0");
+        String twoDigitMinites = twoDigits(duration.inMinutes.remainder(60));
+        String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+        return "${twoDigits(duration.inHours)}:$twoDigitMinites:$twoDigitSeconds";  
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('แสดงสถิติการวิ่งของฉัน'),
+        title: Text('My running status'),
+        backgroundColor: Colors.cyanAccent[400],
       ),
       body: statusLoad
           ? Center(child: CircularProgressIndicator())
           : statusData
               ? ListView.builder(
                   itemCount: runnerModels.length,
-                  itemBuilder: (context, index) => Card(color: index %2 == 0 ? Colors.cyanAccent : Colors.yellow.shade100,
+                  itemBuilder: (context, index) => Card(
+                    color: index % 2 == 0
+                        ? Colors.cyanAccent.shade100
+                        : Colors.white,
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(20.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -76,14 +93,14 @@ class _ShowListRunnerState extends State<ShowListRunner> {
                           //     color: Colors.blue.shade900,
                           //   ),
                           // ),
-                          Text('วันเวลา : ${runnerModels[index].daterunner}'),
+                          Text('Date and Time : ${runnerModels[index].daterunner}'),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                  'ระยะทาง : ${runnerModels[index].distance} กิโลเมตร'),
+                                  'Distance : ${runnerModels[index].distance} Km.'),
                               Text(
-                                  'เวลาแข่งขัน : ${runnerModels[index].timerunner} วินาที'),
+                                  'Time : ${printDuration(int.parse(runnerModels[index].timerunner))} '),
                             ],
                           ),
                         ],
@@ -91,7 +108,7 @@ class _ShowListRunnerState extends State<ShowListRunner> {
                     ),
                   ),
                 )
-              : Center(child: Text('ไม่มี สถิติการวิ่งเลยค่ะ')),
+              : Center(child: Text('No running status')),
     );
   }
 }

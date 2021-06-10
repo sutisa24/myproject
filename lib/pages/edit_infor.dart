@@ -41,7 +41,8 @@ class _EditInforState extends State<EditInfor> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('แก้ไข Profile ${userModel.name}'),
+        title: Text('Edit Profile ${userModel.name}'),
+        backgroundColor: Colors.cyanAccent[400],
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -71,18 +72,19 @@ class _EditInforState extends State<EditInfor> {
   }
 
   RaisedButton buildSaveButton() {
+    
     return RaisedButton.icon(
       onPressed: () {
         if (avatar == null && file == null) {
-          normalDialog(context, 'กรุณาเลือกรูปภาพด้วย');
+          normalDialog(context, 'Please select an image');
         } else if (name.isEmpty || surname.isEmpty || phone.isEmpty) {
-          normalDialog(context, 'กรุณากรอกทุกช่อง ค่ะ');
+          normalDialog(context, 'Please fill out all information');
         } else {
           uploadAvatarEditDatabase();
         }
       },
       icon: Icon(Icons.save),
-      label: Text('บันทึก'),
+      label: Text('Save'),
     );
   }
 
@@ -131,7 +133,7 @@ class _EditInforState extends State<EditInfor> {
         onChanged: (value) => name = value.trim(),
         initialValue: userModel.name,
         decoration: InputDecoration(
-          labelText: 'ชื่อ',
+          labelText: 'First Name',
           prefixIcon: Icon(Icons.account_circle),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
@@ -153,7 +155,7 @@ class _EditInforState extends State<EditInfor> {
         onChanged: (value) => surname = value.trim(),
         initialValue: userModel.surname,
         decoration: InputDecoration(
-          labelText: 'นามสกุล',
+          labelText: 'Last Name',
           prefixIcon: Icon(Icons.group),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
@@ -176,7 +178,7 @@ class _EditInforState extends State<EditInfor> {
         keyboardType: TextInputType.phone,
         initialValue: userModel.phone,
         decoration: InputDecoration(
-          labelText: 'เบอร์โทรศัพท์',
+          labelText: 'Mobile Number',
           prefixIcon: Icon(Icons.phone),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),

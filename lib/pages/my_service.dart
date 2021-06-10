@@ -19,7 +19,7 @@ class _MyServiceState extends State<MyService> {
 
   BottomNavigationBarItem newsBotton() => BottomNavigationBarItem(
         icon: Icon(Icons.home),
-        label: 'ข่าวสาร',
+        label: 'News',
       );
 
   BottomNavigationBarItem gpsBotton() => BottomNavigationBarItem(
@@ -29,14 +29,14 @@ class _MyServiceState extends State<MyService> {
 
   BottomNavigationBarItem typeBotton() => BottomNavigationBarItem(
         icon: Icon(Icons.military_tech),
-        label: 'การแข่งขัน',
+        label: 'Challenge',
       );
 
   BottomNavigationBarItem inforBotton() => BottomNavigationBarItem(
         icon: Icon(
           Icons.account_circle,
         ),
-        label: 'โปรไฟล์ส่วนตัว',
+        label: 'Profile',
       );
 
   @override
@@ -44,6 +44,7 @@ class _MyServiceState extends State<MyService> {
     return Scaffold(
       appBar: AppBar(
         title: Text('SERMSUK'),
+        backgroundColor: Colors.cyanAccent[400],
         actions: [
           IconButton(
             icon: Icon(Icons.leaderboard),
